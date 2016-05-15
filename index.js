@@ -32,7 +32,7 @@ app.get('/', function(req, res){
  * Someone connected.
  */
 io.on('connection', function(socket){
-  console.log('👥➡  somebody connected');
+  console.log('👥➡   somebody connected');
   var client;
   var roomName;
   var nickname;
@@ -80,7 +80,7 @@ io.on('connection', function(socket){
     }
 
     // Log the event.
-    console.log('👥  %s is joining %s', nickname, roomName);
+    console.log('👥➡🚪  %s is joining %s', nickname, roomName);
 
     // List user as a member of the room.
     client = {
@@ -117,7 +117,7 @@ io.on('connection', function(socket){
     // added, all clients (including the person who initiated the ADD command)
     // need to receive the ADD event in order to create the shape onscreen.
     io.to(roomName).emit('add', props);
-    console.log('🔷💥 ', roomName, JSON.stringify(props).replace('\n',''));
+    console.log('🔷💥  ', roomName, JSON.stringify(props).replace('\n',''));
   });
 
   /**
@@ -129,15 +129,13 @@ io.on('connection', function(socket){
     // socket data. it happens locally only, and then the changes are then
     // broadcast to all other clients.
     socket.to(roomName).emit('change', props);
-    console.log('🔷💨 ', roomName, JSON.stringify(props).replace('\n',''));
+    console.log('🔷💨  ', roomName, JSON.stringify(props).replace('\n',''));
   });
 
   /**
    * Someone got bored.
    */
   socket.on('disconnect', function() {
-    console.log('👥⬅  %s left %s', nickname || 'somebody', roomName || '');
-
     if ( !roomName ) {
       // No room was found. The server probably restarted so just bail.
       return false;
@@ -157,8 +155,14 @@ io.on('connection', function(socket){
           'nick': client.nick,
           'sid' : client.sid
         });
+
+        // Log the event.
+        console.log('👥⬅🚪  %s left %s', nickname || 'somebody', roomName || 'an unknown room');
       }
     }
+
+    // Log the event.
+    console.log('👥⬅   %s disconnected', nickname || 'somebody');
 
     // Forget room name
     //
